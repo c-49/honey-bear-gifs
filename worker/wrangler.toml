@@ -1,0 +1,8 @@
+name = "honey-bear-gifs"
+main = "index.js"
+compatibility_date = "2026-09-26"
+workers_dev = true
+
+[[r2_buckets]]
+binding = "GIFS"
+bucket_name = "honey-bear-gifs"

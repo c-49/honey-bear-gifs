@@ -1,0 +1,47 @@
+name: Sync GIFs and deploy Worker
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "originals/**"
+      - "scripts/**"
+      - "worker/**"
+      - "gifs.config.json"
+      - "package.json"
+      - "package-lock.json"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: Re-upload existing objects
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  sync-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Sync images to R2
+        run: node scripts/sync.mjs ${{ github.event.inputs.force == 'true' && '--force' || '' }}
+        env:
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+      - name: Deploy Worker
+        working-directory: worker
+        run: npx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}

@@ -1,0 +1,17 @@
+{
+  "name": "honey-bear-gifs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "sync": "node scripts/sync.mjs",
+    "sync:dry-run": "node scripts/sync.mjs --dry-run"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.883.0",
+    "dotenv": "^16.6.1",
+    "sharp": "^0.34.3"
+  },
+  "devDependencies": {
+    "wrangler": "^4.141.0"
+  }
+}

@@ -1,0 +1,6 @@
+/gifs/
+/node_modules/
+/.env
+/.dev.vars
+/worker/.wrangler/
+/.dry-run-output.txt
